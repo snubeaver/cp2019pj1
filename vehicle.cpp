@@ -38,6 +38,15 @@ class Vehicle{
         void solarCharge();
         int car_check();
 
+    //airplane
+        void airplane();
+        void airplane_print();
+        int airplane_check();
+    //submarine
+        void submarine();
+        void submarine_print();
+        int submarine_check();
+
         int getKm();
         int getHumidity();
         int getSpeed();
@@ -166,6 +175,7 @@ int Vehicle::checkstate(){
 // }
 void Vehicle::car(){
     setSpeed(80);
+    setOxygen(100);
     solarCharge();
 }
 
@@ -173,6 +183,7 @@ void Vehicle::car_print(){
     cout<<"Current Status: Car"<<endl;
     cout<<"Distance: "<<getKm()<<" km"<<endl;
     cout<<"Speed: "<<getSpeed()<<" km/hr"<<endl;
+    cout<<"Energy: "<<getEnergy()<<endl;
     cout<<"Temperature: "<<getTemp()<<" C"<<endl;
     cout<<"Humidity: "<<getHumidity()<<endl;
 }
@@ -190,11 +201,6 @@ int Vehicle::car_check(){
     km+=50;
     setKm(km);
     int p = checkstate();
-    if(p==1) cout<<"!FINISHED : Arrived"<<endl;
-    else if(p==3) cout<<"!FINISHED : Oxygen failure"<<endl;
-    else if(p==4) cout<<"!FINISHED : Energy failure"<<endl;
-    else if(p==6) cout<<"Successfully moved to next 50 km"<<endl;
-    car_print();
     return p;
 }
 
@@ -203,16 +209,29 @@ int Vehicle::car_check(){
 
 
 
-class Airplane : public Vehicle{
-    public:
-        Airplane();
-        void check();
-};
+// class Airplane : public Vehicle{
+//     public:
+//         Airplane();
+//         void check();
+// };
 
-Airplane::Airplane():Vehicle(){
+
+void Vehicle::airplane(){
     setSpeed(900);
 }
-void Airplane::check(){
+void Vehicle::airplane_print(){
+    cout<<"Current Status: Airplane"<<endl;
+    cout<<"Distance: "<<getKm()<<" km"<<endl;
+    cout<<"Speed: "<<getSpeed()<<" km/hr"<<endl;
+    cout<<"Energy: "<<getEnergy()<<endl;
+    cout<<"Oxygen Level: "<<getOxygen()<<endl;
+    cout<<"Temperature: "<<getTemp()<<" C"<<endl;
+    cout<<"Humidity: "<<getHumidity()<<endl;
+    cout<<"Altitude: "<<getAltitude()<<" m"<<endl;
+    cout<<"Air Density: "<<getAirdensity()<<endl;
+}
+
+int Vehicle::airplane_check(){
     checklist();
     int air = getAirdensity();
     int speed = getSpeed();
@@ -225,20 +244,36 @@ void Airplane::check(){
     int oxy = getOxygen();
     oxy-= altitude/100;
     setOxygen(oxy);
+
+    int km = getKm();
+    km+=1000;
+    setKm(km);
+    int p = checkstate();
+    return p;
 }
 
-class Submarine : public Vehicle{
-    public:
-        Submarine();
-        void check();
-        void light(); 
-        //TODO light reduce 30 every 10km
-};
+// class Submarine : public Vehicle{
+//     public:
+//         Submarine();
+//         void check();
+//         void light(); 
+//         //TODO light reduce 30 every 10km
+// };
 
-Submarine::Submarine():Vehicle(){
+void Vehicle::submarine(){
     setSpeed(20);
 }
-void Submarine::check(){
+void Vehicle::submarine_print(){
+    cout<<"Current Status: Submarine"<<endl;
+    cout<<"Distance: "<<getKm()<<" km"<<endl;
+    cout<<"Speed: "<<getSpeed()<<" km/hr"<<endl;
+    cout<<"Energy: "<<getEnergy()<<endl;
+    cout<<"Oxygen Level: "<<getOxygen()<<endl;
+    cout<<"Temperature: "<<getTemp()<<" C"<<endl;
+    cout<<"Depth: "<<getDepth()<<" m"<<endl;
+    cout<<"Water Flow: "<<getWaterflow()<<endl;
+}
+int Vehicle::submarine_check(){
     checklist();
     int depth = getDepth();
     int oxy = getOxygen();
@@ -246,40 +281,50 @@ void Submarine::check(){
     oxy -= 30; // for light
     setOxygen(oxy);
 
+    int energy = getEnergy();
+    energy-=30;
+    setEnergy(energy);
+
     int water = getWaterflow();
     int speed = getSpeed();
     if(water>=70) speed-=10;
     else if(water>=50) speed-=5;
     else if(water>=30) speed-=3;
     setSpeed(speed);
+
+    int km = getKm();
+    km+=10;
+    setKm(km);
+    int p = checkstate();
+    return p;
 }
 
-class Road{
-    public:
-        Road(Vehicle &v, int temp, int humid);
-};
+// class Road{
+//     public:
+//         Road(Vehicle &v, int temp, int humid);
+// };
 
-Road::Road(Vehicle &v, int temp, int hum){
-    v.setTemp(temp);
-    v.setHumidity(hum);
-    v.setOxygen(100);
-}
-class Sky{
-    public:
-        Sky(Airplane &airplane, int temp, int hum, int air);
-};
+// Road::Road(Vehicle &v, int temp, int hum){
+//     v.setTemp(temp);
+//     v.setHumidity(hum);
+//     v.setOxygen(100);
+// }
+// class Sky{
+//     public:
+//         Sky(Vehicle &airplane, int temp, int hum, int air);
+// };
 
-Sky::Sky(Airplane &airplane, int temp, int hum, int air ){
-    airplane.setTemp(temp);
-    airplane.setAirdensity(air);
-    airplane.setHumidity(hum);
-}
-class Ocean{
-    public:
-        Ocean(Submarine &sub, int temp, int water);
-};
+// Sky::Sky(Vehicle &airplane, int temp, int hum, int air ){
+//     airplane.setTemp(temp);
+//     airplane.setAirdensity(air);
+//     airplane.setHumidity(hum);
+// }
+// class Ocean{
+//     public:
+//         Ocean(Submarine &sub, int temp, int water);
+// };
 
-Ocean::Ocean(Submarine &sub, int temp, int water){
-    sub.setTemp(temp);
-    sub.setWaterflow(water);
-}
+// Ocean::Ocean(Submarine &sub, int temp, int water){
+//     sub.setTemp(temp);
+//     sub.setWaterflow(water);
+// }
