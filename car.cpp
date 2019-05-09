@@ -17,19 +17,22 @@ so you have to make get/set functions to deal with the situation.
 class Car : public Vehicle{
     private:
     public:
-        Car();
+        Vehicle obj;
+        Car(Vehicle v):obj(v);
+        void print();
         void solarCharge();
 
 };
-Car::Car():Vehicle(){
-    setSpeed(80);
-    solarCharge();
+Car::Car(Vehicle v):Vehicle(v){
+    v->setSpeed(80);
+    v->solarCharge();
 }
-void Car::solarCharge(){
-    int humid = getHumidity();
-    if(humid>=50) return;
-    int energy = getEnergy();
-    energy+=200;
-    if(energy>1000) setEnergy(1000);
-    else setEnergy(energy);
+
+void Vehicle::car_print(){
+    cout<<"Current Status: Car"<<endl;
+    cout<<"Distance: "<<getKm()<<" km"<<endl;
+    cout<<"Speed: "<<getSpeed()<<" km/hr"<<endl;
+    cout<<"Temperature: "<<getTemp()<<" C"<<endl;
+    cout<<"Humidity: "<<getHumidity()<<endl;
 }
+

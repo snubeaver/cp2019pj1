@@ -3,8 +3,12 @@
 #include <sstream>
 #include <vector>
 using namespace std;
-void road(string s, Vehicle gogo){
-    int i =0;
+void road_50(Vehicle *gogo, int km){
+    gogo->car_check();
+    
+}
+void road(string s, Vehicle *gogo){
+    int i =1;
     string km_s="";
     string t_s="";
     while(s.at(i)!='T'){
@@ -18,8 +22,18 @@ void road(string s, Vehicle gogo){
     int km= stoi(km_s);
     int t= stoi(t_s);
     int h= stoi(h_s);
-    
+    gogo->setTemp(t);
+    gogo->setHumidity(h);
+    gogo->setKm(0);
+    gogo->car();
+    gogo->car_print();
+    cout<<"Next Move? (1,2)"<<endl;
+    cout<<"CP-2012-11933>";
+    int mode=1;
+    cin>>mode;
+    if(mode==1) road_50(gogo, km);
 }
+
 
 void sky(string s){
 
@@ -41,7 +55,8 @@ int main(void){
     stringstream ss(tc);
     string token;
     vector<string> tasks;
-    Vehicle gogo;
+    Vehicle* gogo = new Vehicle();
+
     while(getline(ss, token, ',')){
         tasks.push_back(token);
     }
@@ -49,7 +64,6 @@ int main(void){
         int len = tasks[i].length();
         string parsed_task = tasks[i].substr(1,len-2);
         char d  =parsed_task.at(0);
-        cout<<d;
         switch(d){
             case 'R' : road(parsed_task, gogo);
             case 'S' : sky(parsed_task);

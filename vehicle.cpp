@@ -1,4 +1,5 @@
-
+#include <iostream>
+using namespace std;
 
 class Vehicle{
     private:
@@ -11,6 +12,12 @@ class Vehicle{
         int airdensity;
         int depth;
         int waterflow;
+        int km;
+        int state;
+        int arrived;
+        int subgoal;
+        //0: default 1: arrival 2: mode change 
+        //3:no energy 4:no oxygen 5:car stop 6:subgoal
     public:
         Vehicle();
         void setSpeed(int speed);
@@ -22,7 +29,16 @@ class Vehicle{
         void setAirdensity(int air);
         void setDepth(int depth);
         void setWaterflow(int water);
+        void setKm(int km);
+        void setSubgoal(int km);
 
+    //car
+        void car();
+        void car_print();
+        void solarCharge();
+        int car_check();
+
+        int getKm();
         int getHumidity();
         int getSpeed();
         int getEnergy();
@@ -32,7 +48,8 @@ class Vehicle{
         int getAirdensity();
         int getDepth();
         int getWaterflow();
-
+        int getSubgoal();
+        int checkstate();
         void checklist();
 
 };
@@ -40,8 +57,10 @@ class Vehicle{
 Vehicle::Vehicle(){
     setEnergy(1000);
     setOxygen(100);
-
+    this->state=0;
+    this->arrived=0;
 };
+
 
 void Vehicle::checklist(){
     if(this->temp<40&&this->temp>0) this->energy-=5;
@@ -79,7 +98,19 @@ void Vehicle::setWaterflow(int water){
 void Vehicle::setHumidity(int h){
     this->humidity = h;
 }
+void Vehicle::setKm(int km){
+    this->km = km;
+}
+void Vehicle::setSubgoal(int km){
+    this->subgoal = km;
+}
 
+int Vehicle::getSubgoal(){
+    return this->subgoal;
+}
+int Vehicle::getKm(){
+    return this->km;
+}
 int Vehicle::getSpeed(){
     return this->speed;
 }
@@ -109,20 +140,43 @@ int Vehicle::getWaterflow(){
 int Vehicle::getHumidity(){
     return this->humidity;
 }
+int Vehicle::checkstate(){
+    if(this->arrived) return 1;
+    else if(this->oxygen<=0) return 3;
+    else if(this->energy<=0) return 4;
+    else if(this->subgoal<=this->km) return 6;
+    else return 0;
+}
 
 
-class Car : public Vehicle{
-    private:
-    public:
-        Car();
-        void solarCharge();
 
-};
-Car::Car():Vehicle(){
+
+// class Car : public Vehicle{
+//     private:
+//     public:
+//         Car();
+//         Car(Vehicle v);
+//         void print();
+//         void solarCharge();
+
+// };
+// Car::Car(Vehicle v):Vehicle(v){
+//     setSpeed(80);
+//     solarCharge();
+// }
+void Vehicle::car(){
     setSpeed(80);
     solarCharge();
 }
-void Car::solarCharge(){
+
+void Vehicle::car_print(){
+    cout<<"Current Status: Car"<<endl;
+    cout<<"Distance: "<<getKm()<<" km"<<endl;
+    cout<<"Speed: "<<getSpeed()<<" km/hr"<<endl;
+    cout<<"Temperature: "<<getTemp()<<" C"<<endl;
+    cout<<"Humidity: "<<getHumidity()<<endl;
+}
+void Vehicle::solarCharge(){
     int humid = getHumidity();
     if(humid>=50) return;
     int energy = getEnergy();
@@ -130,6 +184,24 @@ void Car::solarCharge(){
     if(energy>1000) setEnergy(1000);
     else setEnergy(energy);
 }
+int Vehicle::car_check(){
+    checklist();
+    int km = getKm();
+    km+=50;
+    setKm(km);
+    int p = checkstate();
+    if(p==1) cout<<"!FINISHED : Arrived"<<endl;
+    else if(p==3) cout<<"!FINISHED : Oxygen failure"<<endl;
+    else if(p==4) cout<<"!FINISHED : Energy failure"<<endl;
+    else if(p==6) cout<<"Successfully moved to next 50 km"<<endl;
+    car_print();
+    return p;
+}
+
+
+
+
+
 
 class Airplane : public Vehicle{
     public:
@@ -184,13 +256,13 @@ void Submarine::check(){
 
 class Road{
     public:
-        Road(Car &car, int temp, int humid);
+        Road(Vehicle &v, int temp, int humid);
 };
 
-Road::Road(Car &car, int temp, int hum){
-    car.setTemp(temp);
-    car.setHumidity(hum);
-    car.setOxygen(100);
+Road::Road(Vehicle &v, int temp, int hum){
+    v.setTemp(temp);
+    v.setHumidity(hum);
+    v.setOxygen(100);
 }
 class Sky{
     public:
