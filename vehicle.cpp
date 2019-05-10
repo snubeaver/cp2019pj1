@@ -34,6 +34,7 @@ class Vehicle{
 
     //car
         void car();
+        void car_b();
         void car_print();
         void solarCharge();
         int car_check();
@@ -60,6 +61,7 @@ class Vehicle{
         int getSubgoal();
         int checkstate();
         void checklist();
+        int broken=0;
 
 };
 
@@ -74,7 +76,7 @@ Vehicle::Vehicle(){
 void Vehicle::checklist(){
     if(this->temp<40&&this->temp>0) this->energy-=5;
     else if(this->temp>=40) this->energy-=10;
-    else this->energy-=8;
+    else if(this->temp==0)this->energy-=8;
 
     if(this->humidity<50) this->energy -=5;
     else this->energy -=8;
@@ -178,7 +180,10 @@ void Vehicle::car(){
     setOxygen(100);
     solarCharge();
 }
-
+void Vehicle::car_b(){
+    setSpeed(80);
+    setOxygen(100);
+}
 void Vehicle::car_print(){
     cout<<"Current Status: Car"<<endl;
     cout<<"Distance: "<<getKm()<<" km"<<endl;
@@ -218,6 +223,12 @@ int Vehicle::car_check(){
 
 void Vehicle::airplane(){
     setSpeed(900);
+    int air = getAirdensity();
+    int speed = getSpeed();
+    if(air>=70) speed-=500;
+    else if(air>=50) speed -=300;
+    else if(air>=30) speed -=200;
+    setSpeed(speed);
 }
 void Vehicle::airplane_print(){
     cout<<"Current Status: Airplane"<<endl;
@@ -233,16 +244,12 @@ void Vehicle::airplane_print(){
 
 int Vehicle::airplane_check(){
     checklist();
-    int air = getAirdensity();
-    int speed = getSpeed();
-    if(air>=70) speed-=500;
-    else if(air>=50) speed -=300;
-    else if(air>=30) speed -=200;
-    setSpeed(speed);
+
 
     int altitude = getAltitude();
     int oxy = getOxygen();
-    oxy-= altitude/100;
+    int time = altitude/1000;
+    oxy-= time*10;
     setOxygen(oxy);
 
     int km = getKm();
@@ -252,16 +259,16 @@ int Vehicle::airplane_check(){
     return p;
 }
 
-// class Submarine : public Vehicle{
-//     public:
-//         Submarine();
-//         void check();
-//         void light(); 
-//         //TODO light reduce 30 every 10km
-// };
 
 void Vehicle::submarine(){
     setSpeed(20);
+    setHumidity(100);
+    int water = getWaterflow();
+    int speed = getSpeed();
+    if(water>=70) speed-=10;
+    else if(water>=50) speed-=5;
+    else if(water>=30) speed-=3;
+    setSpeed(speed);
 }
 void Vehicle::submarine_print(){
     cout<<"Current Status: Submarine"<<endl;
@@ -274,23 +281,21 @@ void Vehicle::submarine_print(){
     cout<<"Water Flow: "<<getWaterflow()<<endl;
 }
 int Vehicle::submarine_check(){
-    checklist();
+    if(this->temp<40&&this->temp>0) this->energy-=5;
+    else if(this->temp>=40) this->energy-=10;
+    else if(this->temp==0)this->energy-=8;
+
     int depth = getDepth();
     int oxy = getOxygen();
-    oxy -= depth/10;
-    oxy -= 30; // for light
+    int time = depth/50;
+    oxy -= time*5;
     setOxygen(oxy);
 
     int energy = getEnergy();
     energy-=30;
     setEnergy(energy);
 
-    int water = getWaterflow();
-    int speed = getSpeed();
-    if(water>=70) speed-=10;
-    else if(water>=50) speed-=5;
-    else if(water>=30) speed-=3;
-    setSpeed(speed);
+
 
     int km = getKm();
     km+=10;
@@ -298,33 +303,3 @@ int Vehicle::submarine_check(){
     int p = checkstate();
     return p;
 }
-
-// class Road{
-//     public:
-//         Road(Vehicle &v, int temp, int humid);
-// };
-
-// Road::Road(Vehicle &v, int temp, int hum){
-//     v.setTemp(temp);
-//     v.setHumidity(hum);
-//     v.setOxygen(100);
-// }
-// class Sky{
-//     public:
-//         Sky(Vehicle &airplane, int temp, int hum, int air);
-// };
-
-// Sky::Sky(Vehicle &airplane, int temp, int hum, int air ){
-//     airplane.setTemp(temp);
-//     airplane.setAirdensity(air);
-//     airplane.setHumidity(hum);
-// }
-// class Ocean{
-//     public:
-//         Ocean(Submarine &sub, int temp, int water);
-// };
-
-// Ocean::Ocean(Submarine &sub, int temp, int water){
-//     sub.setTemp(temp);
-//     sub.setWaterflow(water);
-// }
